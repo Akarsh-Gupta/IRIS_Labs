@@ -15,3 +15,51 @@ module DFF_with_Reset(
   end
 
 endmodule
+
+
+//TestBench
+module DFF_with_Reset_Testbench;
+
+  reg clk;
+  reg reset;
+  reg d;
+  wire q;
+
+  // The module is instantiated as dut
+  DFF_with_Reset dut (
+    .clk(clk),
+    .reset(reset),
+    .d(d),
+    .q(q)
+  );
+
+  // Clock generation
+  always begin
+    clk = 1'b0;
+    #5;
+    clk = 1'b1;
+    #5;
+  end
+
+  // Stimulus generation
+  initial begin
+    reset = 1'b1;
+    d = 1'b0;
+    #10;
+    reset = 1'b0;
+    d = 1'b1;
+    #10;
+    d = 1'b0;   // The output should remain 0 due to reset
+    #10;
+    reset = 1'b1;  // Reset is asserted again
+    #10;
+    reset = 1'b0;  // Reset is de-asserted
+    d = 1'b1;     // The output should capture the input value
+    #10;
+    d = 1'b0;
+    #10;
+    $finish;
+  end
+
+endmodule
+
